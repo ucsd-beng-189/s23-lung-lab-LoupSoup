@@ -4,7 +4,7 @@ global camax n maxcount;
 
 %initialize:
 ca_lower=zeros(n,1);         %lower end of interval
-ca_upper= ones(n,1)*camax;   %upper end of interval
+ca_upper= ones(n,1).*camax;   %upper end of interval
 ca=(ca_lower+ca_upper)/2;    %midpoint of interval
 
 %start main loop:

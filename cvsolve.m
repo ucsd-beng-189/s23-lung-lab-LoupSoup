@@ -16,8 +16,8 @@ for count=1:maxcount
   neg=~pos;
   
   %if(pos) cv_upper=cv; else cv_lower=cv:
-  cv_upper=cv_upper*neg+cv*pos 
-  cv_lower=cv_lower*pos+cv*neg 
+  cv_upper=cv_upper*neg+cv*pos; 
+  cv_lower=cv_lower*pos+cv*neg;
   
   %set cv=midpoint of current interval:
   cv=(cv_lower+cv_upper)/2;
