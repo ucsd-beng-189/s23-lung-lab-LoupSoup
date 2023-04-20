@@ -1,4 +1,5 @@
 % filename: setup_lung.m
+global camax n maxcount M Q RT cI Pstar cstar;
 %heterogeneity parameter (0<=beta<=1):
 %beta=0 for homogenous lung
 %beta=1 for no ventilation/perfusion correlation
