@@ -47,8 +47,6 @@ PAbar=RT*cAbar
 %
 %oxygen partial pressure in the inspired air:
 PI=RT*cI
-%store PI, PAbar, Pabar, Pv in parts
-parts=[PI PAbar Pabar Pv];
 % 
 %check that partial pressures are in expected order
 if((Pv<Pabar)&(Pabar<=PAbar)&(PAbar<PI))
@@ -88,14 +86,11 @@ u=ones(n,1);
 cblood=[cv*u cabar*u ca];
 cair=  [cI*u cAbar*u cA];
 Pressures=[Pv*u Pabar*u PAbar*u PI*u Pa PA];
-%figure(2)
-%subplot(2,1,1),plot(r,cblood,'.')
-%legend('venous','mean arterial','arterial')
-%title('blood oxygen conc v. r')
-%subplot(2,1,2),plot(r,cair  ,'.')
-%legend('inspired','mean alveolar','alveolar')
-%title('air oxygen conc v. r')
-%figure(3)
-%plot(r,Pressures,'.')
-%legend('venous partial','mean arterial','mean alveolar','inspired','arterial','alveoli')
-%title('oxygen partial pressures v. r')
+figure(2)
+subplot(2,1,1),plot(r,cblood,'.')
+legend('venous conc','mean arterial','arterial')
+subplot(2,1,2),plot(r,cair  ,'.')
+legend('inspired conc','mean alveolar','alveolar')
+figure(3)
+plot(r,Pressures,'.')
+legend('venous partial','mean arterial','mean alveolar','inspired','')

@@ -1,9 +1,10 @@
 % filename: setup_lung.m
-global camax n maxcount M Q RT cI Pstar cstar;
+%global camax n maxcount M Q RT cI Pstar cstar;
+global B
 %heterogeneity parameter (0<=beta<=1):
 %beta=0 for homogenous lung
 %beta=1 for no ventilation/perfusion correlation
-beta=0.5;
+beta=B;
 %
 %number of iterations used in bisection:
 maxcount=20;
