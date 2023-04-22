@@ -48,7 +48,7 @@ PAbar=RT*cAbar
 %oxygen partial pressure in the inspired air:
 PI=RT*cI
 %store PI, PAbar, Pabar, Pv in parts
-parts=[PI PAbar Pabar Pv];
+parts=[PAbar Pabar Pv cAbar cabar cv];
 % 
 %check that partial pressures are in expected order
 if((Pv<Pabar)&(Pabar<=PAbar)&(PAbar<PI))

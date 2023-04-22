@@ -1,64 +1,92 @@
 %filename: lung.m (main program)
 clear all
 clf
-global Pstar cstar n maxcount M Q camax RT cI B parts;
+global Pstar cstar n maxcount M Q camax RT cI B pci parts;
 %global variables B for changing beta and parts to save partial pressure
 %values for each run
-%vectors for plotting partial pressures against beta
-bPI = [];
-bPAbar = [];
-bPabar = [];
-bPv = [];
+
+%for task 5 want mean alveolar, mean arterial, and venous partial pressure
+%and O2 concentrations
+cIPAbar = [];
+cIPabar = [];
+cIPv = [];
+cIcAbar = [];
+cIcabar = [];
+cIcv = [];
 
 %defualt beta is .5; variable beta step
+%For task 5, varying cI similarly to how beta was varied; using default
+%beta=.5
 B=.5;
 interval=.01;
-Bvals=0:interval:1;
+%Bvals=0:interval:1;
 
 %starting M at .25*cref*5.6; increasing the .25 scalar by .001 which took
 %longer to run, .01 works fineish
 m=.25;
-mint=.001;
+mint=.01;
 mcheck=1;
 maxMs=[];
 
-%loop for beta values 0 to 1 with interval as step
-%for task 3, suppressing the outchecklung graph outputs
-for i=0:interval:1
-B=i;
-setup_lung          %sets M to .25*cref*5.6
-%cvsolve throws error when M is too high: Mdiff(0,r)>0
-%find greatest M by increasing M till Mdiff(0,r)>0
-    while mcheck==1
-        M=m*cref*5.6;
-        if Mdiff(0,r)>0     %if <- that then M too big
-            mcheck=0;
-            m=m-2*mint;
-        end
-        m=m+mint;  
-    end
-M=m*cref*5.6;
-maxMs(1,end+1)=m;
-cvsolve
-m=.25; %reset m for next beta
-mcheck=1;
 
+%loop for pci values 0 to 1 with interval as step task 5
+%for task 3 onward, suppressing the outchecklung graph outputs
+for i=0:interval:1
+pci=i;
+setup_lung          %sets M to .25*cref*5.6
+
+%%task 3
+% % %cvsolve throws error when M is too high: Mdiff(0,r)>0
+% % %find greatest M by increasing M till Mdiff(0,r)>0
+% %     while mcheck==1
+% %         M=m*cref*5.6;
+% %         if Mdiff(0,r)>0     %if <- that then M too big
+% %             mcheck=0;
+% %             m=m-2*mint;
+% %         end
+% %         m=m+mint;  
+% %     end
+% % M=m*cref*5.6;
+% % maxMs(1,end+1)=m;
+% % m=.25; %reset m for next beta
+% % mcheck=1;
+
+cvsolve
 outchecklung
-% %outchecklung saved parts as [PI PAbar Pabar Pv]
-% bPI(1,end+1)=parts(1);
-% bPAbar(1,end+1)=parts(2);
-% bPabar(1,end+1)=parts(3);
-% bPv(1,end+1)=parts(4);
+% %outchecklung saved parts as [PAbar Pabar Pv cAbar cabar cv]
+cIPAbar(1,end+1)=parts(1);
+cIPabar(1,end+1)=parts(2);
+cIPv(1,end+1)=parts(3);
+cIcAbar(1,end+1)=parts(4);
+cIcabar(1,end+1)=parts(5);
+cIcv(1,end+1)=parts(6);
 end
 
 
-%Task 4 beta and M plot
+%Task 5 plots
+civals=0:interval:1;
+civals=civals.*(0.2/(22.4*(310/273)));
+presspart=[cIPAbar' cIPabar' cIPv'];
+concpart=[cIcAbar' cIcabar' cIcv'];
 figure(4)
-plot(Bvals,maxMs,'.')
-title('max oxygen consumption at diff betas')
-xlabel('betas')
-ylabel('moles/min')
+plot(civlas,presspart,'.')
+title('partial pressures v. cI')
+xlabel('inspired air O2 conc')
+ylabel('pressures mmHg')
+legend('mean alveolar','mean arterial','venous')
+figure(5)
+plot(civlas,concpart,'.')
+title('O2 conc v. cI')
+xlabel('inspired air O2 conc')
+ylabel('pressures mmHg')
+legend('mean alveolar','mean arterial','venous')
 
+% %Task 4 beta and M plot
+% figure(4)
+% plot(Bvals,maxMs,'.')
+% title('max oxygen consumption at diff betas')
+% xlabel('betas')
+% ylabel('moles/min')
 
 %Task 3 plots
 % pressparts=[bPI' bPAbar' bPabar' bPv'];
