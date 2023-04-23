@@ -36,16 +36,16 @@ Patm=760;
 alt=0:100:15000;%altitude every 100 meters; 150 values
 atmPs=101325*((1-(2.25577*10^-5)*alt).^5.25588); %in Pascals
 atmPs=atmPs/133.3; %convert to mmHg
-adapt=1; %1 for task 6, 1.5 for task 7
+adapt=.7; %1 for task 6, 1.5 for task 7, .75 for task 10
 
 %task 9 adapt now goes below 1 to reflect worse hemoglobin in the blood
-adp=adapt:-.05:.1;   %not 0 bc no hemoglobin at all is trivial
+%adp=adapt:-.05:.1;   %not 0 bc no hemoglobin at all is trivial
 
 
 
 %for task 3 onward, suppressing the outchecklung graph outputs
-for i=1:size(adp,2)
-adapt=adp(i);
+for i=1:size(atmPs,2)
+Patm=atmPs(i)
 
 setup_lung          %sets M to .25*cref*5.6
 
@@ -78,50 +78,50 @@ tcv(1,end+1)=parts(6);
 end
 
 
-%Task 9 plots
-anemic=adp*cref;
-presspart=[tPAbar' tPabar' tPv'];
-concpart=[tcAbar' tcabar' tcv'];
-figure(4)
-plot(anemic,presspart,'.')
-title('partial pressures v. blood ox conc')
-xlabel('blood oxygen concentration')
-ylabel('pressures mmHg')
-legend('mean alveolar','mean arterial','venous')
-figure(5)
-plot(anemic,concpart,'.')
-title('O2 conc v. blood ox conc')
-xlabel('blood oxygen concentration')
-ylabel('O2 conc mol/liter')
-legend('mean alveolar','mean arterial','venous')
-%determining altitude at which normal resting O2 consumption rate is
-%unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
-Mrest=.25*cref*5.6;
-Mdead=find(maxMs(:)<Mrest,1)
-anemiadead=anemic(Mdead-1)  %the one before it is unsustainable
-cstardead=anemiadead*cref*5.6
-%altdead=alt(Mdead)
-
-% %Task 6 and 7 plots
-% presspart=[cIPAbar' cIPabar' cIPv'];
-% concpart=[cIcAbar' cIcabar' cIcv'];
+% %Task 9 plots
+% anemic=adp*cref;
+% presspart=[tPAbar' tPabar' tPv'];
+% concpart=[tcAbar' tcabar' tcv'];
 % figure(4)
-% plot(alt,presspart,'.')
-% title('partial pressures v. altitude')
-% xlabel('altitude (m)')
+% plot(anemic,presspart,'.')
+% title('partial pressures v. blood ox conc')
+% xlabel('blood oxygen concentration')
 % ylabel('pressures mmHg')
 % legend('mean alveolar','mean arterial','venous')
 % figure(5)
-% plot(alt,concpart,'.')
-% title('O2 conc v. altitude')
-% xlabel('altitude (m)')
+% plot(anemic,concpart,'.')
+% title('O2 conc v. blood ox conc')
+% xlabel('blood oxygen concentration')
 % ylabel('O2 conc mol/liter')
 % legend('mean alveolar','mean arterial','venous')
 % %determining altitude at which normal resting O2 consumption rate is
 % %unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
 % Mrest=.25*cref*5.6;
 % Mdead=find(maxMs(:)<Mrest,1)
-% altdead=alt(Mdead)
+% anemiadead=anemic(Mdead-1)  %the one before it is unsustainable
+% cstardead=anemiadead*cref*5.6
+% %altdead=alt(Mdead)
+
+%Task 6 and 7 plots
+presspart=[tPAbar' tPabar' tPv'];
+concpart=[tcAbar' tcabar' tcv'];
+figure(4)
+plot(alt,presspart,'.')
+title('anemic partial pressures v. altitude')
+xlabel('altitude (m)')
+ylabel('pressures mmHg')
+legend('mean alveolar','mean arterial','venous')
+figure(5)
+plot(alt,concpart,'.')
+title('anemic O2 conc v. altitude')
+xlabel('altitude (m)')
+ylabel('O2 conc mol/liter')
+legend('mean alveolar','mean arterial','venous')
+%determining altitude at which normal resting O2 consumption rate is
+%unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
+Mrest=.25*cref*5.6;
+Mdead=find(maxMs(:)<Mrest,1)
+altdead=alt(Mdead)
 
 
 % %Task 5 plots
