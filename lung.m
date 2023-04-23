@@ -1,7 +1,7 @@
 %filename: lung.m (main program)
 clear all
 clf
-global Pstar cstar n maxcount M Q camax RT cI B pci parts;
+global Pstar cstar n maxcount M Q camax RT cI B pci parts Patm adapt;
 %global variables B for changing beta and parts to save partial pressure
 %values for each run
 
@@ -28,11 +28,21 @@ mint=.1;
 mcheck=1;
 maxMs=[];
 
+%Task 7 altitude variation - varying atm pressure which calcs PI in setup_lung; using the relationship
+%Patm=101325(1-(2.25577*10^-5)*h)^5.25588 in pascals and converting to mmhg
+%This relationship varies with humidity and temperature, so this is
+%somewhat arbitrary but gives a somewhat realistic pressure gradient to use
+Patm=760;
+alt=0:100:15000;%altitude every 100 meters; 150 values
+atmPs=101325*((1-(2.25577*10^-5)*alt).^5.25588); %in Pascals
+atmPs=atmPs/133.3; %convert to mmHg
+adapt=1; %1 for task 6, 1.5 for task 7
+
 
 %loop for pci values 0 to 1 with interval as step task 5
 %for task 3 onward, suppressing the outchecklung graph outputs
-for i=0:interval:1
-pci=i;
+for i=1:151
+Patm=atmPs(i);
 setup_lung          %sets M to .25*cref*5.6
 
 %%task 3
@@ -63,24 +73,44 @@ cIcabar(1,end+1)=parts(5);
 cIcv(1,end+1)=parts(6);
 end
 
-
-%Task 5 plots
-civals=0:interval:1;
-civals=civals.*(0.2/(22.4*(310/273)));
+%Task 6 and 7 plots
 presspart=[cIPAbar' cIPabar' cIPv'];
 concpart=[cIcAbar' cIcabar' cIcv'];
 figure(4)
-plot(civals,presspart,'.')
-title('partial pressures v. cI')
-xlabel('inspired air O2 conc')
+plot(alt,presspart,'.')
+title('partial pressures v. altitude')
+xlabel('altitude (m)')
 ylabel('pressures mmHg')
 legend('mean alveolar','mean arterial','venous')
 figure(5)
-plot(civals,concpart,'.')
-title('O2 conc v. cI')
-xlabel('inspired air O2 conc')
+plot(alt,concpart,'.')
+title('O2 conc v. altitude')
+xlabel('altitude (m)')
 ylabel('O2 conc mol/liter')
 legend('mean alveolar','mean arterial','venous')
+%determining altitude at which normal resting O2 consumption rate is
+%unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
+Mdead=find(maxMs(:)<0.011,1)
+altdead=alt(Mdead)
+
+
+% %Task 5 plots
+% civals=0:interval:1;
+% civals=civals.*(0.2/(22.4*(310/273)));
+% presspart=[cIPAbar' cIPabar' cIPv'];
+% concpart=[cIcAbar' cIcabar' cIcv'];
+% figure(4)
+% plot(civals,presspart,'.')
+% title('partial pressures v. cI')
+% xlabel('inspired air O2 conc')
+% ylabel('pressures mmHg')
+% legend('mean alveolar','mean arterial','venous')
+% figure(5)
+% plot(civals,concpart,'.')
+% title('O2 conc v. cI')
+% xlabel('inspired air O2 conc')
+% ylabel('O2 conc mol/liter')
+% legend('mean alveolar','mean arterial','venous')
 
 % %Task 4 beta and M plot
 % figure(4)

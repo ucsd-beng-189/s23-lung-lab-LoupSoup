@@ -1,6 +1,6 @@
 % filename: setup_lung.m
 %global camax n maxcount M Q RT cI Pstar cstar;
-global B
+global B Patm adapt
 %heterogeneity parameter (0<=beta<=1):
 %beta=0 for homogenous lung
 %beta=1 for no ventilation/perfusion correlation
@@ -22,7 +22,7 @@ cI=cref;    %for task 5 this is pci*cref
 %
 %blood oxygen concentration
 %at full hemoglobin saturation: 
-cstar=cref;
+cstar=adapt*cref;     %for high altitude adaptation *adapt
 %cstar=4*(concentration of hemoglobin 
 %in blood expressed in moles/liter)
 %
@@ -35,7 +35,7 @@ Pstar=25;
 %
 %gas constant*absolute temperature 
 %(mmHg*liters/mole):
-RT=760*22.4*(310/273);  %for task 6, this
+RT=Patm*22.4*(310/273);  %for task 6, this is Patm*22.4*(310/273);
 %
 %oxygen partial pressure 
 %in the inspired air (mmHg):
