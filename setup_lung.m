@@ -18,7 +18,7 @@ cref=0.2/(22.4*(310/273));
 %in air at sea level at body temperature
 %
 %oxygen concentration in the inspired air:
-cI=pci*cref;
+cI=cref;    %for task 5 this is pci*cref
 %
 %blood oxygen concentration
 %at full hemoglobin saturation: 
@@ -35,7 +35,7 @@ Pstar=25;
 %
 %gas constant*absolute temperature 
 %(mmHg*liters/mole):
-RT=760*22.4*(310/273);
+RT=760*22.4*(310/273);  %for task 6, this
 %
 %oxygen partial pressure 
 %in the inspired air (mmHg):

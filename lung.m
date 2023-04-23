@@ -47,7 +47,7 @@ setup_lung          %sets M to .25*cref*5.6
         m=m+mint;  
     end
 M=m*cref*5.6;
-maxMs(1,end+1)=m;
+maxMs(1,end+1)=M;
 m=0; %reset m for next beta
 mcheck=1;
 %using task 3 to allow for very low inspired O2 levels to run
