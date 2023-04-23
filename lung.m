@@ -7,12 +7,12 @@ global Pstar cstar n maxcount M Q camax RT cI B pci parts Patm adapt;
 
 %for task 5 want mean alveolar, mean arterial, and venous partial pressure
 %and O2 concentrations
-cIPAbar = [];
-cIPabar = [];
-cIPv = [];
-cIcAbar = [];
-cIcabar = [];
-cIcv = [];
+tPAbar = [];
+tPabar = [];
+tPv = [];
+tcAbar = [];
+tcabar = [];
+tcv = [];
 
 %defualt beta is .5; variable beta step
 %For task 5, varying cI similarly to how beta was varied; using default
@@ -36,13 +36,17 @@ Patm=760;
 alt=0:100:15000;%altitude every 100 meters; 150 values
 atmPs=101325*((1-(2.25577*10^-5)*alt).^5.25588); %in Pascals
 atmPs=atmPs/133.3; %convert to mmHg
-adapt=1.5; %1 for task 6, 1.5 for task 7
+adapt=1; %1 for task 6, 1.5 for task 7
+
+%task 9 adapt now goes below 1 to reflect worse hemoglobin in the blood
+adp=adapt:-.05:.1;   %not 0 bc no hemoglobin at all is trivial
 
 
-%loop for pci values 0 to 1 with interval as step task 5
+
 %for task 3 onward, suppressing the outchecklung graph outputs
-for i=1:151
-Patm=atmPs(i);
+for i=1:size(adp,2)
+adapt=adp(i);
+
 setup_lung          %sets M to .25*cref*5.6
 
 %%task 3
@@ -65,34 +69,59 @@ mcheck=1;
 cvsolve
 outchecklung
 % %outchecklung saved parts as [PAbar Pabar Pv cAbar cabar cv]
-cIPAbar(1,end+1)=parts(1);
-cIPabar(1,end+1)=parts(2);
-cIPv(1,end+1)=parts(3);
-cIcAbar(1,end+1)=parts(4);
-cIcabar(1,end+1)=parts(5);
-cIcv(1,end+1)=parts(6);
+tPAbar(1,end+1)=parts(1);
+tPabar(1,end+1)=parts(2);
+tPv(1,end+1)=parts(3);
+tcAbar(1,end+1)=parts(4);
+tcabar(1,end+1)=parts(5);
+tcv(1,end+1)=parts(6);
 end
 
-%Task 6 and 7 plots
-presspart=[cIPAbar' cIPabar' cIPv'];
-concpart=[cIcAbar' cIcabar' cIcv'];
+
+%Task 9 plots
+anemic=adp*cref;
+presspart=[tPAbar' tPabar' tPv'];
+concpart=[tcAbar' tcabar' tcv'];
 figure(4)
-plot(alt,presspart,'.')
-title('partial pressures v. altitude')
-xlabel('altitude (m)')
+plot(anemic,presspart,'.')
+title('partial pressures v. blood ox conc')
+xlabel('blood oxygen concentration')
 ylabel('pressures mmHg')
 legend('mean alveolar','mean arterial','venous')
 figure(5)
-plot(alt,concpart,'.')
-title('O2 conc v. altitude')
-xlabel('altitude (m)')
+plot(anemic,concpart,'.')
+title('O2 conc v. blood ox conc')
+xlabel('blood oxygen concentration')
 ylabel('O2 conc mol/liter')
 legend('mean alveolar','mean arterial','venous')
 %determining altitude at which normal resting O2 consumption rate is
 %unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
 Mrest=.25*cref*5.6;
 Mdead=find(maxMs(:)<Mrest,1)
-altdead=alt(Mdead)
+anemiadead=anemic(Mdead-1)  %the one before it is unsustainable
+cstardead=anemiadead*cref*5.6
+%altdead=alt(Mdead)
+
+% %Task 6 and 7 plots
+% presspart=[cIPAbar' cIPabar' cIPv'];
+% concpart=[cIcAbar' cIcabar' cIcv'];
+% figure(4)
+% plot(alt,presspart,'.')
+% title('partial pressures v. altitude')
+% xlabel('altitude (m)')
+% ylabel('pressures mmHg')
+% legend('mean alveolar','mean arterial','venous')
+% figure(5)
+% plot(alt,concpart,'.')
+% title('O2 conc v. altitude')
+% xlabel('altitude (m)')
+% ylabel('O2 conc mol/liter')
+% legend('mean alveolar','mean arterial','venous')
+% %determining altitude at which normal resting O2 consumption rate is
+% %unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
+% Mrest=.25*cref*5.6;
+% Mdead=find(maxMs(:)<Mrest,1)
+% altdead=alt(Mdead)
 
 
 % %Task 5 plots
