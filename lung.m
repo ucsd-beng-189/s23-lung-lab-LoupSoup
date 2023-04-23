@@ -36,7 +36,7 @@ Patm=760;
 alt=0:100:15000;%altitude every 100 meters; 150 values
 atmPs=101325*((1-(2.25577*10^-5)*alt).^5.25588); %in Pascals
 atmPs=atmPs/133.3; %convert to mmHg
-adapt=1; %1 for task 6, 1.5 for task 7
+adapt=1.5; %1 for task 6, 1.5 for task 7
 
 
 %loop for pci values 0 to 1 with interval as step task 5
@@ -90,7 +90,8 @@ ylabel('O2 conc mol/liter')
 legend('mean alveolar','mean arterial','venous')
 %determining altitude at which normal resting O2 consumption rate is
 %unsustainable: ^^rate is defined as .25*cref*5.6 = 0.0110
-Mdead=find(maxMs(:)<0.011,1)
+Mrest=.25*cref*5.6;
+Mdead=find(maxMs(:)<Mrest,1)
 altdead=alt(Mdead)
 
 
